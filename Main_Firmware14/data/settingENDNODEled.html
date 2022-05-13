@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+ 
+        <div id="container">
+            <select id='myselect'>
+            </select>
+        </div>
+
+        <br> R <input type='number' id='ledR' min="0" max="255"><br />
+        <br> G <input type='number' id='ledG' min="0" max="255"><br />
+        <br> B <input type='number' id='ledB' min="0" max="255"><br />
+        <br> LED Power <input type='number' id='ledPower' min="0" max="100"><br />
+
+        <div>
+            <button type="button" onclick="updateList()">refresh</button>
+            <button type="button" onclick="submitENDNODEled()">submit</button>
+        </div>
+
+
+    <script>
+
+        function updateList() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    var select = document.getElementById('myselect');
+                    let str = this.responseText;
+                    
+                    //console.log(str);
+                    
+                    var nodeList = str.split(":");
+
+                    select.innerHTML = '';
+
+                    for (var node of nodeList) {
+                        var objOption = document.createElement("option");
+
+                        console.log(objOption.value);
+                        objOption.id="nodeID";
+                        objOption.text = node;
+                        objOption.value = node;
+                        select.add(objOption);
+                    }
+
+                }
+            };
+            xhttp.open("GET", "settingENDNODEled_updateList", true);
+            xhttp.send();
+        }
+
+        function submitENDNODEled() {
+            var nodeID = document.getElementById('myselect').options[document.getElementById('myselect').selectedIndex].value;
+            var ledR = document.getElementById('ledR').value;
+            var ledB = document.getElementById('ledB').value;
+            var ledG = document.getElementById('ledG').value;
+            var ledPower = document.getElementById('ledPower').value;
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.open("GET", "settingENDNODEled?nodeID="+nodeID+"&ledR="+ ledR + "&ledB=" + ledB +"&ledG=" + ledG + "&ledPower="+ledPower, true);
+            xhttp.send();
+        }
+
+    </script>
+</body>
+
+</html>
